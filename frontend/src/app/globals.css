@@ -1,4 +1,11 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom global styles can go here */
+body {
+  @apply bg-gray-50 font-sans;
+}
 
 :root {
   --background: #ffffff;
