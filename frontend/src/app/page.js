@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import StudentForm from './components/StudentForm';
-import StudentList from './components/StudentList';
-import EmailEditor from './components/EmailEditor';
+import Navbar from './components/Navbar';
 
 export default function Home() {
   const [refresh, setRefresh] = useState(false);
@@ -13,11 +11,10 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gray-50 p-8">
       <h1 className="text-4xl font-bold mb-8 text-center text-blue-700">
-        Sisora Higher Education Institute - Bulk Email App
+        Sisora Higher Education Institute
       </h1>
-      <StudentForm fetchStudents={refreshStudents} />
-      <StudentList refresh={refresh} />
-      <EmailEditor />
+      <Navbar />
+  
     </main>
   );
 }
