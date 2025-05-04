@@ -2,9 +2,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import { MdOutlineUpdate } from "react-icons/md";
+import { MdOutlineDeleteOutline } from "react-icons/md";
 
 export default function StudentList({ refresh }) {
   const [students, setStudents] = useState([]);
+  const [showDeleteConfirmation, setshowDeleteConfirmation] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+
 
   const fetchStudents = async () => {
     try {
@@ -20,15 +25,24 @@ export default function StudentList({ refresh }) {
     fetchStudents();
   }, [refresh]);
 
-  const handleDelete = async (id) => {
-    if (!confirm("Are you sure to delete this student?")) return;
+
+  const handleDelete = (id) => {
+    setSelectedId(id);
+    setshowDeleteConfirmation(true);
+  };
+  
+  const confirmDelete = async () => {
     try {
-      await axios.delete(`http://localhost:8080/api/v1/students/delete/${id}`);
-      setStudents(students.filter((s) => s.id !== id));
+      await axios.delete(`http://localhost:8080/api/v1/students/delete/${selectedId}`);
+      setStudents((prev) => prev.filter((s) => s.id !== selectedId));
     } catch {
       alert("Delete failed");
+    } finally {
+      setshowDeleteConfirmation(false);
+      setSelectedId(null);
     }
   };
+  
 
   return (
     <div className="max-w-3xl mx-auto bg-white rounded-md shadow-md p-6 mb-8 mt-24">
@@ -56,19 +70,16 @@ export default function StudentList({ refresh }) {
               <td className="p-3 border">{student.firstName}</td>
               <td className="p-3 border">{student.lastName}</td>
               <td className="p-3 border">{student.email}</td>
-              <td className="p-3 border gap-6 flex justify-center items-center">
-                <button
-                  onClick={() => handleUpdate(id)}
+              <td className="p-3 border gap-6 flex justify-center items-center ">
+                <MdOutlineUpdate
+                  onClick={() => handleUpdate(student.id)}
                   className="text-blue-600 hover:text-blue-800 font-semibold"
-                >
-                  Update
-                </button>
-                <button
-                  onClick={() => handleDelete(id)}
+                />
+
+                <MdOutlineDeleteOutline
+                  onClick={() => handleDelete(student.id)}
                   className="text-red-600 hover:text-red-800 font-semibold"
-                >
-                  Delete
-                </button>
+                />
               </td>
             </tr>
           ))}
@@ -81,6 +92,32 @@ export default function StudentList({ refresh }) {
           )}
         </tbody>
       </table>
+
+
+      {showDeleteConfirmation && (
+  <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md text-center">
+      <h2 className="text-lg font-semibold mb-4 text-gray-800">Are you sure?</h2>
+      <p className="text-gray-600 mb-6">This student will be permanently deleted.</p>
+      <div className="flex justify-center gap-4">
+        <button
+          onClick={confirmDelete}
+          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
+        >
+          Yes, Delete
+        </button>
+        <button
+          onClick={() => setshowDeleteConfirmation(false)}
+          className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+      
     </div>
   );
 }
