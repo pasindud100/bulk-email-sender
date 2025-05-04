@@ -20,29 +20,18 @@ public class StudentController {
     @Autowired
     private EmailService emailService;
 
-    //save student..
     @PostMapping
     public ResponseEntity<StudentDto> saveStudent(@RequestBody StudentDto studentDto) {
-        StudentDto savesStudent = studentService.saveStudent(studentDto);
-        return ResponseEntity.ok(savesStudent);
-
+        StudentDto savedStudent = studentService.saveStudent(studentDto);
+        return ResponseEntity.ok(savedStudent);
     }
 
-    //get all students
     @GetMapping
     public ResponseEntity<List<StudentDto>> getAllStudents() {
         List<StudentDto> students = studentService.getAllStudents();
         return ResponseEntity.ok(students);
     }
 
-    //update student
-    @PutMapping("update/{id}")
-    public ResponseEntity<StudentDto> updateStudent(@PathVariable Long id, @RequestBody StudentDto studentDto) {
-        StudentDto updatedStudent = studentService.updateStudent(id, studentDto);
-        return ResponseEntity.ok(updatedStudent);
-    }
-
-    //delete student
     @DeleteMapping("delete/{id}")
     public ResponseEntity<String> deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
