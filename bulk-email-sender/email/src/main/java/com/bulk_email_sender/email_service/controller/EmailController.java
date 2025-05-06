@@ -22,22 +22,4 @@ public class EmailController {
         emailService.sendBulkEmails(request.getSubject(), request.getBody());
         return ResponseEntity.ok().build();
     }
-
-    @GetMapping
-    public ResponseEntity<List<com.bulk_email_sender.email_service.entity.Email>> getAllEmails() {
-        return ResponseEntity.ok(emailService.getAllEmails());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Email> getEmailById(@PathVariable Long id) {
-        Email email = (Email) emailService.getEmailById(id);
-        if (email == null) return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(email);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEmail(@PathVariable Long id) {
-        emailService.deleteEmail(id);
-        return ResponseEntity.noContent().build();
-    }
 }

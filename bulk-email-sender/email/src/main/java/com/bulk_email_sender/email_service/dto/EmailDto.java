@@ -7,7 +7,7 @@ public class EmailDto {
     private String body;
     private List<String> recipients;
 
-    // Getters and Setters
+
     public String getSubject() {
         return subject;
     }

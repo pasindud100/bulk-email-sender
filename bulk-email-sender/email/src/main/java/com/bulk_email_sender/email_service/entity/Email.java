@@ -15,13 +15,11 @@ public class Email {
     @Column(columnDefinition = "TEXT")
     private String body;
 
-    private String status; // e.g., SENT, FAILED
+    private String status;
 
-    // Default constructor
     public Email() {
     }
 
-    // Constructor with parameters
     public Email(String recipientEmail, String subject, String body, String status) {
         this.recipientEmail = recipientEmail;
         this.subject = subject;
@@ -29,7 +27,6 @@ public class Email {
         this.status = status;
     }
 
-    // Getters and setters
     public Long getId() {
         return id;
     }

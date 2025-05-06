@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-//This annotation is used to handle exceptions globally in the application.
+//to handle exceptions globally in the application.
 @ControllerAdvice
 public class GlobalExceptionHandler {
 

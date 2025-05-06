@@ -26,13 +26,14 @@ public class StudentService {
         Student existingStudent = studentRepository.findByEmail(studentToSave.getEmail());
 
         if (existingStudent != null) {
-            throw new UserAlreadyExistException("User already exists with email: " + studentToSave.getEmail());
+            throw new UserAlreadyExistException("User  already exists with email: " + studentToSave.getEmail());
         }
 
         Student savedStudent = studentRepository.save(studentToSave);
         return studentMapper.toDto(savedStudent);
     }
 
+    //get all
     public List<StudentDto> getAllStudents() {
         List<Student> receivedStudents = studentRepository.findAll();
         return receivedStudents.stream()
@@ -42,5 +43,20 @@ public class StudentService {
 
     public void deleteStudent(Long id) {
         studentRepository.deleteById(id);
+    }
+
+    public StudentDto updateStudent(Long id, StudentDto studentDto) {
+        Optional<Student> isExist = studentRepository.findById(id);
+        if (!isExist.isPresent()) {
+            throw new RuntimeException("Student not found with id: " + id);
+        }
+
+        Student existingStudent = isExist.get();
+        existingStudent.setFirstName(studentDto.getFirstName());
+        existingStudent.setLastName(studentDto.getLastName());
+        existingStudent.setEmail(studentDto.getEmail());
+
+        Student updatedStudent = studentRepository.save(existingStudent);
+        return studentMapper.toDto(updatedStudent);
     }
 }
