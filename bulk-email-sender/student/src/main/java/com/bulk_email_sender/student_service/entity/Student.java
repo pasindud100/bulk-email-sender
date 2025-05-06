@@ -12,7 +12,6 @@ public class Student {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -42,6 +41,16 @@ public class Student {
     }
 
     public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Student() {
+    }
+
+    public Student(Long id, String firstName, String lastName, String email) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
     }
 }

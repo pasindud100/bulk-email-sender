@@ -9,7 +9,13 @@ public class StudentDto {
     public StudentDto() {
     }
 
-    // Getters and setters
+    public StudentDto(Long id, String firstName, String lastName, String email) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
+
     public Long getId() {
         return id;
     }
@@ -41,4 +47,6 @@ public class StudentDto {
     public void setEmail(String email) {
         this.email = email;
     }
+
+
 }

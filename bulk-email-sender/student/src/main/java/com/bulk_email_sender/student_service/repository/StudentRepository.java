@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
 
-    // Custom method to check if a category with a specific name exists.
+    // Custom method to check if a category with a specific name exists
     Student findByEmail(String email);
 
 }
