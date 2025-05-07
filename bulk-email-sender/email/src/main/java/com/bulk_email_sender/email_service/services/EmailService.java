@@ -6,56 +6,58 @@ import com.bulk_email_sender.email_service.repository.EmailRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.MediaType;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import jakarta.mail.internet.MimeMessage;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
+import jakarta.mail.internet.MimeMessage;
 import java.util.List;
 
 @Service
 public class EmailService {
 
-    //inject the JavaMailSender bean
+    private final WebClient webClient;
+
     @Autowired
     private JavaMailSender mailSender;
 
     @Autowired
     private EmailRepository emailRepository;
 
-    //REST client to make HTTP calls
-    private RestTemplate restTemplate = new RestTemplate();
-
-    private String STUDENT_SERVICE_URL = "http://localhost:8080/api/v1/students";
-
-    //objectMapper to convert JSON strings to Java objects
+    // ObjectMapper to convert JSON strings to Java objects
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public void sendBulkEmails(String subject, String htmlBody) {
-        try {
-            // Make a get request to the student service to fetch all students
-            ResponseEntity<String> response = restTemplate.exchange(
-                    STUDENT_SERVICE_URL,
-                    HttpMethod.GET,
-                    null,
-                    String.class);
-
-            // convert JSON response into studentDto objects
-            List<StudentDto> students = objectMapper.readValue(response.getBody(), new TypeReference<List<StudentDto>>() {
-            });
-
-            //send email to each student using their email and first name
-            for (StudentDto student : students) {
-                sendEmail(student.getEmail(), student.getFirstName(), subject, htmlBody);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public EmailService(WebClient webClient) {
+        this.webClient = webClient;
     }
 
- //Sends email and logs the result in the database.
+    public void sendBulkEmails(String subject, String htmlBody) {
+        //request to student service to get all students
+        webClient.get()
+                .uri("/api/v1/students") // specified the base url inside ebClient configuration file
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(String.class)
+                .flatMap(responseBody -> {
+                    try{
+                        //this convert json response into StudentDto objects
+                        List<StudentDto> students = objectMapper.readValue(responseBody, new TypeReference<List<StudentDto>>() {});
+                        //Send email to each student using their email and first name
+                        for (StudentDto student : students) {
+                            sendEmail(student.getEmail(), student.getFirstName(), subject, htmlBody);
+                        }
+                    } catch(Exception e){
+                        e.printStackTrace();
+                    }
+                    return Mono.empty();
+                })
+                .subscribe(); // this to the Mono to trigger the request..
+    }
+
+    // Sends email and logs the result in the database.
     private void sendEmail(String toEmail, String recipientName, String subject, String rawHtml) {
         try {
             // Create a new mime email message
@@ -70,7 +72,7 @@ public class EmailService {
 
             mailSender.send(message);
 
-            // Save a successful email record to the database
+            // Save a successful email msg
             Email emailRecord = new Email(toEmail, subject, personalizedBody, "SENT");
             emailRepository.save(emailRecord);
         } catch (Exception e) {

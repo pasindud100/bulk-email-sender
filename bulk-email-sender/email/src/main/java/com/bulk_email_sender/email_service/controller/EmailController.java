@@ -2,12 +2,9 @@ package com.bulk_email_sender.email_service.controller;
 
 import com.bulk_email_sender.email_service.dto.EmailRequestDto;
 import com.bulk_email_sender.email_service.services.EmailService;
-import jakarta.validation.constraints.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/emails")
@@ -22,4 +19,5 @@ public class EmailController {
         emailService.sendBulkEmails(request.getSubject(), request.getBody());
         return ResponseEntity.ok().build();
     }
+
 }

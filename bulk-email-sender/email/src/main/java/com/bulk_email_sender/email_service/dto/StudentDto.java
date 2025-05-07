@@ -9,7 +9,6 @@ public class StudentDto {
     public StudentDto() {
     }
 
-    // Getters and setters
     public Long getId() {
         return id;
     }

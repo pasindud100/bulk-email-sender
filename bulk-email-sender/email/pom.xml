@@ -26,7 +26,7 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-mail</artifactId> <!-- Added Mail Starter -->
+            <artifactId>spring-boot-starter-mail</artifactId> 
         </dependency>
 
         <dependency>
@@ -57,5 +57,11 @@
             <scope>provided</scope>
         </dependency>
 
+<!--        web clent-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+            <version>3.4.3</version>
+        </dependency>
     </dependencies>
 </project>
